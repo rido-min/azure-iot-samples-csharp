@@ -104,8 +104,8 @@ try {
     if ($run)
     {
         # Save the environment variables into local variables
-        $primaryConnectionString = $Env:IOTHUB-DEVICE-CONN-STRING
-        $secondaryConnectionString = $Env:IOTHUB-DEVICE-CONN-STRING2
+        $primaryConnectionString = $Env:IOTHUB_DEVICE_CONN_STRING
+        $secondaryConnectionString = $Env:IOTHUB_DEVICE_CONN_STRING2
         $transportType = "Mqtt"
 
         # Run cleanup first so the samples don't get overloaded with old device instances
