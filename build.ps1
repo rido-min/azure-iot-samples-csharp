@@ -76,7 +76,7 @@ Function RunApp($path, $message, $args) {
     Write-Host -ForegroundColor Cyan $label
     cd (Join-Path $rootDir $path)
 
-    & dotnet run -- $args
+    & dotnet run $args
 
     if ($LASTEXITCODE -ne 0) {
         throw "Tests failed: $label"
@@ -112,7 +112,7 @@ try {
         #RunApp provisioning\Samples\service\CleanupEnrollmentsSample "Provisioning\Service\CleanupEnrollmentsSample"
         #RunApp iot-hub\Samples\service\CleanUpDevicesSample "IoTHub\Service\CleanUpDevicesSample"
 
-        RunApp iot-hub\Samples\device\DeviceReconnectionSample "IoTHub\Device\DeviceReconnectionSample" (--PrimaryConnectionString $primaryConnectionString -s $secondaryConnectionString -t $transportType)
+        RunApp iot-hub\Samples\device\DeviceReconnectionSample "IoTHub\Device\DeviceReconnectionSample" (-- -p $primaryConnectionString -s $secondaryConnectionString -t $transportType)
         RunApp iot-hub\Samples\device\FileUploadSample "IoTHub\Device\FileUploadSample"
         RunApp iot-hub\Samples\device\ImportExportDevicesSample "IoTHub\Device\ImportExportDevicesSample"
         RunApp iot-hub\Samples\device\MessageSample "IoTHub\Device\MessageSample"
