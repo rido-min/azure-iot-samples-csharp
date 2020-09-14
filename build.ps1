@@ -108,13 +108,11 @@ try {
         $secondaryConnectionString = $env:IOTHUB_DEVICE_CONN_STRING2
         $transportType = "Mqtt"
 
-        Write-Host "primary $primaryConnectionString"
-
         # Run cleanup first so the samples don't get overloaded with old device instances
-        RunApp provisioning\Samples\service\CleanupEnrollmentsSample "Provisioning\Service\CleanupEnrollmentsSample"
-        RunApp iot-hub\Samples\service\CleanUpDevicesSample "IoTHub\Service\CleanUpDevicesSample"
+        #RunApp provisioning\Samples\service\CleanupEnrollmentsSample "Provisioning\Service\CleanupEnrollmentsSample"
+        #RunApp iot-hub\Samples\service\CleanUpDevicesSample "IoTHub\Service\CleanUpDevicesSample"
 
-        RunApp iot-hub\Samples\device\DeviceReconnectionSample "IoTHub\Device\DeviceReconnectionSample" -p $primaryConnectionString -s $secondaryConnectionString -t $transportType
+        RunApp iot-hub\Samples\device\DeviceReconnectionSample "IoTHub\Device\DeviceReconnectionSample" (-p $primaryConnectionString -s $secondaryConnectionString -t $transportType)
         RunApp iot-hub\Samples\device\FileUploadSample "IoTHub\Device\FileUploadSample"
         RunApp iot-hub\Samples\device\ImportExportDevicesSample "IoTHub\Device\ImportExportDevicesSample"
         RunApp iot-hub\Samples\device\MessageSample "IoTHub\Device\MessageSample"
