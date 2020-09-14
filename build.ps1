@@ -103,12 +103,18 @@ try {
 
     if ($run)
     {
+        # Save the environment variables into local variables
+        $primaryConnectionString = $Env:IOTHUB-DEVICE-CONN-STRING
+        $secondaryConnectionString = $Env:IOTHUB-DEVICE-CONN-STRING2
+        $transportType = "Mqtt"
+
         # Run cleanup first so the samples don't get overloaded with old device instances
         RunApp provisioning\Samples\service\CleanupEnrollmentsSample "Provisioning\Service\CleanupEnrollmentsSample"
         RunApp iot-hub\Samples\service\CleanUpDevicesSample "IoTHub\Service\CleanUpDevicesSample"
 
+        RunApp iot-hub\Samples\device\DeviceReconnectionSample "IoTHub\Device\DeviceReconnectionSample" -p $primaryConnectionString -s $secondaryConnectionString -t $transportType
         RunApp iot-hub\Samples\device\FileUploadSample "IoTHub\Device\FileUploadSample"
-        RunApp iot-hub\Samples\device\KeysRolloverSample "IoTHub\Device\KeysRolloverSample"
+        RunApp iot-hub\Samples\device\ImportExportDevicesSample "IoTHub\Device\ImportExportDevicesSample"
         RunApp iot-hub\Samples\device\MessageSample "IoTHub\Device\MessageSample"
         RunApp iot-hub\Samples\device\MethodSample "IoTHub\Device\MethodSample"
         RunApp iot-hub\Samples\device\TwinSample "IoTHub\Device\TwinSample"
@@ -117,6 +123,7 @@ try {
         RunApp iot-hub\Samples\module\TwinSample "IoTHub\Module\TwinSample"
 
         RunApp iot-hub\Samples\service\AutomaticDeviceManagementSample "IoTHub\Service\AutomaticDeviceManagementSample"
+        RunApp iot-hub\Samples\service\ImportExportDevicesSample "IoTHub\Service\ImportExportDevicesSample"
         RunApp iot-hub\Samples\service\JobsSample "IoTHub\Service\JobsSample"
         RunApp iot-hub\Samples\service\RegistryManagerSample "IoTHub\Service\RegistryManagerSample"
 
