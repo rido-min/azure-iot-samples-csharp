@@ -104,9 +104,11 @@ try {
     if ($run)
     {
         # Save the environment variables into local variables
-        $primaryConnectionString = $Env:IOTHUB_DEVICE_CONN_STRING
-        $secondaryConnectionString = $Env:IOTHUB_DEVICE_CONN_STRING2
+        $primaryConnectionString = $env:IOTHUB_DEVICE_CONN_STRING
+        $secondaryConnectionString = $env:IOTHUB_DEVICE_CONN_STRING2
         $transportType = "Mqtt"
+
+        Write-Host "primary $primaryConnectionString"
 
         # Run cleanup first so the samples don't get overloaded with old device instances
         RunApp provisioning\Samples\service\CleanupEnrollmentsSample "Provisioning\Service\CleanupEnrollmentsSample"
@@ -127,7 +129,7 @@ try {
         RunApp iot-hub\Samples\service\JobsSample "IoTHub\Service\JobsSample"
         RunApp iot-hub\Samples\service\RegistryManagerSample "IoTHub\Service\RegistryManagerSample"
 
-        $deviceId = ($Env:IOTHUB_DEVICE_CONN_STRING.Split(';') | where {$_ -like "DeviceId*"}).Split("=")[1]
+        $deviceId = ($env:IOTHUB_DEVICE_CONN_STRING.Split(';') | where {$_ -like "DeviceId*"}).Split("=")[1]
         Write-Warning $deviceId
         RunApp iot-hub\Samples\service\ServiceClientSample "IoTHub\Service\ServiceClientSample" - $deviceId
 
