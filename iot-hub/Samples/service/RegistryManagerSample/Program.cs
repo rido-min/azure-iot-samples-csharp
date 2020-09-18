@@ -15,7 +15,7 @@ namespace Microsoft.Azure.Devices.Samples
         // - set the IOTHUB_CONN_STRING_CSHARP environment variable 
         // - create a launchSettings.json (see launchSettings.json.template) containing the variable
 
-        private static string s_connectionString = Environment.GetEnvironmentVariable("IOTHUB_CONN_STRING_CSHARP");
+        private static string s_connectionString = "HostName=abmisr-testhub02.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=0uJb3E7RNBZ+xYTh6bRVLsR9dpxxl8jAtA1E3MPWosk="; // Environment.GetEnvironmentVariable("IOTHUB_CONN_STRING_CSHARP");
 
         public static async Task<int> Main(string[] args)
         {

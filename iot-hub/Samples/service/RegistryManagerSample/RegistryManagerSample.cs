@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Devices.Samples
 
         public async Task RunSampleAsync()
         {
-            await EnumerateTwinsAsync().ConfigureAwait(false);
+            //await EnumerateTwinsAsync().ConfigureAwait(false);
 
             try
             {
