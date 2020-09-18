@@ -23,6 +23,12 @@ namespace Microsoft.Azure.Devices.Samples
 
         public async Task RunSampleAsync()
         {
+            Console.WriteLine("get as ThermostatTwin");
+            var twin = await GetAndPrintDigitalTwin<ThermostatTwin>("thermostat");
+            Console.WriteLine("get as string");
+            var twin2 = await GetAndPrintDigitalTwin<string>("thermostat");
+
+
             Console.WriteLine("\n\n========== Operations with \"thermostat\" - root component only ==========");
             var thermostat = "thermostat";
             await GetAndUpdateDigitalTwin(thermostat, true);
@@ -103,18 +109,18 @@ namespace Microsoft.Azure.Devices.Samples
             string componentName = "thermostat1";
             string componentCommandName = "getMaxMinReport";
             DateTimeOffset since = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(2));
-            var rebootResponse = await _digitalTwinClient.InvokeComponentCommandAsync(digitalTwinId, componentName, componentCommandName, JsonConvert.SerializeObject(since));
+            var maxMinReportResponse = await _digitalTwinClient.InvokeComponentCommandAsync(digitalTwinId, componentName, componentCommandName, JsonConvert.SerializeObject(since));
 
-            Console.WriteLine($"\nCommand \"{componentCommandName}\" invoked under \"{componentName}\", device response was {rebootResponse.Headers.XMsCommandStatuscode}");
-            Console.WriteLine($"\t{rebootResponse.Body}");
+            Console.WriteLine($"\nCommand \"{componentCommandName}\" invoked under \"{componentName}\", device response was {maxMinReportResponse.Body.Status}");
+            Console.WriteLine($"\t{maxMinReportResponse.Body.Payload}");
 
             // Invoke the command "reboot" on the root component.
             string rootCommandName = "reboot";
             int delay = 1;
-            var reportResponse = await _digitalTwinClient.InvokeCommandAsync(digitalTwinId, rootCommandName, JsonConvert.SerializeObject(delay));
+            var rebootResponse = await _digitalTwinClient.InvokeCommandAsync(digitalTwinId, rootCommandName, JsonConvert.SerializeObject(delay));
 
-            Console.WriteLine($"\nCommand \"{rootCommandName}\" invoked under \"root component\", device response was {reportResponse.Headers.XMsCommandStatuscode}");
-            Console.WriteLine($"\t{reportResponse.Body}");
+            Console.WriteLine($"\nCommand \"{rootCommandName}\" invoked under \"root component\", device response was {rebootResponse.Body.Status}");
+            Console.WriteLine($"\t{rebootResponse.Body}");
         }
     }
 }

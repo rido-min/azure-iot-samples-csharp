@@ -10,7 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\azure\iothub\service\src\Microsoft.Azure.Devices.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\azure\iothub\service\src\Microsoft.Azure.Devices.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\azure\shared\src\Microsoft.Azure.Devices.Shared.csproj" />
   </ItemGroup>
 
 </Project>
