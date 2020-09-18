@@ -13,10 +13,10 @@ namespace DigitalTwinClientSample
         public new ThermostatMetadata Metadata { get; set; }
 
         [JsonProperty("maxTempSinceLastReboot")]
-        public int MaxTempSinceLastReboot { get; set; }
+        public double MaxTempSinceLastReboot { get; set; }
 
         [JsonProperty("targetTemperature")]
-        public int TargetTemperature { get; set; }
+        public double TargetTemperature { get; set; }
     }
 
     public class ThermostatMetadata : DigitalTwinMetadata

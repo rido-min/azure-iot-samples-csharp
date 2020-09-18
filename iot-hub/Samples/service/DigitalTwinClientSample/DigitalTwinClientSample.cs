@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using DigitalTwinClientSample;
-using Microsoft.Azure.Devices.ModernDotNet.DigitalTwin.Serialization;
 using Microsoft.Azure.Devices.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
 
@@ -13,6 +11,7 @@ namespace Microsoft.Azure.Devices.Samples
 {
     public class DigitalTwinClientSample
     {
+        private static readonly Random Random = new Random();
         private readonly DigitalTwinClient _digitalTwinClient;
         private readonly string _digitalTwinId;
 
@@ -25,18 +24,23 @@ namespace Microsoft.Azure.Devices.Samples
         public async Task RunSampleAsync()
         {
             Console.WriteLine("\n\n========== Operations with \"thermostat\" - root component only ==========");
-            await GetAndUpdateDigitalTwin("thermostat", true);
+            var thermostat = "thermostat";
+            await GetAndUpdateDigitalTwin(thermostat, true);
 
             Console.WriteLine("\n\n========== Operations with \"tc\" - with sub-component ==========");
-            await GetAndUpdateDigitalTwin("tc");
+            var temperatureController = "tc";
+            await GetAndUpdateDigitalTwin(temperatureController);
+            await InvokeCommands(temperatureController);
         }
 
         private async Task GetAndUpdateDigitalTwin(string digitalTwinId, bool rootComponent = false)
         {
             string propertyName = "targetTemperature";
-            int propertyValue = new Random().Next(0, 100);
+
             if (rootComponent)
             {
+                int propertyValue = Random.Next(0, 100);
+
                 var twin = await GetAndPrintDigitalTwin<ThermostatTwin>(digitalTwinId);
                 var targetTemperature = twin.TargetTemperature;
                 Console.WriteLine($"\nCurrent \"{propertyName}\" under \"root component\": {targetTemperature}");
@@ -60,11 +64,15 @@ namespace Microsoft.Azure.Devices.Samples
             else
             {
                 string componentName = "thermostat1";
+                int propertyValue = Random.Next(0, 100);
 
-                var twin = await GetAndPrintDigitalTwin<BasicDigitalTwin>(digitalTwinId);
-                JObject thermostat1 = JObject.FromObject(twin.CustomProperties[componentName]);
-                var thermostat1TargetTemperature = thermostat1.GetValue(propertyName);
-                Console.WriteLine($"\nCurrent \"{propertyName}\" under \"{componentName}\": {thermostat1TargetTemperature}");
+                var twin = await GetAndPrintDigitalTwin<TemperatureControllerTwin>(digitalTwinId);
+                var targetTemperature = twin.Thermostat1.TargetTemperature;
+                Console.WriteLine($"\nCurrent \"{propertyName}\" under \"{componentName}\": {targetTemperature}");
+
+                var targetTempDesiredValue = twin.Thermostat1.Metadata.TargetTemperature.DesiredValue;
+                var targetTempDesiredVersion = twin.Thermostat1.Metadata.TargetTemperature.DesiredVersion;
+                Console.WriteLine($"Current desired value = {targetTempDesiredValue}, version = {targetTempDesiredVersion}");
 
                 // Update the property "targetTemperature" under "thermostat1" component.
                 Console.WriteLine($"\nUpdate the property \"{propertyName}\" under \"{componentName}\" to {propertyValue}.");
@@ -73,10 +81,10 @@ namespace Microsoft.Azure.Devices.Samples
                 var updateResponse = await _digitalTwinClient.UpdateAsync(digitalTwinId, op.Serialize());
                 Console.WriteLine($"\nUpdate operation was: {updateResponse.Response.StatusCode}");
 
-                var twin2 = await GetAndPrintDigitalTwin<BasicDigitalTwin>(digitalTwinId);
-                JObject updatedThermostat1 = JObject.FromObject(twin2.CustomProperties[componentName]);
-                var updatedThermostat1TargetTemperature = updatedThermostat1.GetValue(propertyName);
-                Console.WriteLine($"\nCurrent \"{propertyName}\" under \"{componentName}\": {updatedThermostat1TargetTemperature}");
+                var twin2 = await GetAndPrintDigitalTwin<TemperatureControllerTwin>(digitalTwinId);
+                var targetTempDesiredValue2 = twin2.Thermostat1.Metadata.TargetTemperature.DesiredValue;
+                var targetTempDesiredVersion2 = twin2.Thermostat1.Metadata.TargetTemperature.DesiredVersion;
+                Console.WriteLine($"\nCurrent desired value = {targetTempDesiredValue2}, version = {targetTempDesiredVersion2}");
             }
         }
 
@@ -87,6 +95,26 @@ namespace Microsoft.Azure.Devices.Samples
             Console.WriteLine($"\nComplete twin: \n{JsonConvert.SerializeObject(twin, Formatting.Indented)}");
 
             return twin;
+        }
+
+        private async Task InvokeCommands(string digitalTwinId)
+        {
+            // Invoke the command "getMaxMinReport" on component "thermostat1".
+            string componentName = "thermostat1";
+            string componentCommandName = "getMaxMinReport";
+            DateTimeOffset since = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(2));
+            var rebootResponse = await _digitalTwinClient.InvokeComponentCommandAsync(digitalTwinId, componentName, componentCommandName, JsonConvert.SerializeObject(since));
+
+            Console.WriteLine($"\nCommand \"{componentCommandName}\" invoked under \"{componentName}\", device response was {rebootResponse.Headers.XMsCommandStatuscode}");
+            Console.WriteLine($"\t{rebootResponse.Body}");
+
+            // Invoke the command "reboot" on the root component.
+            string rootCommandName = "reboot";
+            int delay = 1;
+            var reportResponse = await _digitalTwinClient.InvokeCommandAsync(digitalTwinId, rootCommandName, JsonConvert.SerializeObject(delay));
+
+            Console.WriteLine($"\nCommand \"{rootCommandName}\" invoked under \"root component\", device response was {reportResponse.Headers.XMsCommandStatuscode}");
+            Console.WriteLine($"\t{reportResponse.Body}");
         }
     }
 }

@@ -13,6 +13,12 @@ namespace DigitalTwinClientSample
 
         [JsonProperty("serialNumber")]
         public string SerialNumber { get; set; }
+
+        [JsonProperty("thermostat1")]
+        public ThermostatTwin Thermostat1 { get; set; }
+
+        [JsonProperty("thermostat2")]
+        public ThermostatTwin Thermostat2 { get; set; }
     }
 
     public class TemperatureControllerMetadata : DigitalTwinMetadata
