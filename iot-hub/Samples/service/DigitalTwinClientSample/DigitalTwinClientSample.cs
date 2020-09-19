@@ -120,7 +120,7 @@ namespace Microsoft.Azure.Devices.Samples
             var rebootResponse = await _digitalTwinClient.InvokeCommandAsync(digitalTwinId, rootCommandName, JsonConvert.SerializeObject(delay));
 
             Console.WriteLine($"\nCommand \"{rootCommandName}\" invoked under \"root component\", device response was {rebootResponse.Body.Status}");
-            Console.WriteLine($"\t{rebootResponse.Body}");
+            Console.WriteLine($"\t{rebootResponse.Body.Payload}");
         }
     }
 }
