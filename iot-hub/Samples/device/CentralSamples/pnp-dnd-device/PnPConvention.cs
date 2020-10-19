@@ -83,7 +83,7 @@ namespace pnp_dnd_device
             ackProps["av"] = statusVersion;
             if (!string.IsNullOrEmpty(statusDescription)) ackProps["ad"] = statusDescription;
             TwinCollection ackChildren = new TwinCollection();
-            ackChildren["__t"] = "c"; // TODO: Review, should the ACK require the flag
+            ackChildren["__t"] = "c"; 
             ackChildren[propertyName] = ackProps;
             ack[componentName] = ackChildren;
             return ack;
@@ -102,5 +102,6 @@ namespace pnp_dnd_device
             };
             return ackProp;
         }
+
     }
 }

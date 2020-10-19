@@ -2,16 +2,10 @@
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Rido;
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace pnp_dnd_device
 {
@@ -34,7 +28,6 @@ namespace pnp_dnd_device
             deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(config.GetValue<string>("DeviceConnectionString"), logger, "");
             diag = new DiagnosticsComponent(this);
 
-
             await deviceClient.SetDesiredPropertyUpdateCallbackAsync(DesiredPropertyUpdateCallback, null);
             await deviceClient.SetMethodHandlerAsync(diag.RebootName, diag.Reboot, diag.Name, token);
 
@@ -47,7 +40,7 @@ namespace pnp_dnd_device
             {
                 await deviceClient.SendEventAsync(PnPConvention.CreateMessage(new { temperature = new Random().Next(100) }));
                 await deviceClient.SendEventAsync(diag.GetWorkingSet());
-                Console.WriteLine($"Waiting {telemetryInterval} seconds.");
+                Console.Write($"\r [{DateTime.Now.ToLongTimeString()}] \t Interval {telemetryInterval} s ");
                 await Task.Delay(telemetryInterval * 1000);
             }                
                 
@@ -57,7 +50,13 @@ namespace pnp_dnd_device
         {
             Console.WriteLine("REBOOT" + new string('*', 30));
             telemetryInterval = 5;
-            await deviceClient.UpdateReportedPropertiesAsync(PnPConvention.CreateAck(diag.Name, "telemetryInterval", telemetryInterval, 201, 0, "Using Default Value"));
+            TwinCollection reported = new TwinCollection();
+            reported[diag.Name] = new
+            {
+                __t = "c",
+                lastReboot = DateTime.Now
+            };
+            await deviceClient.UpdateReportedPropertiesAsync(reported);
         }
 
         private async Task DesiredPropertyUpdateCallback(TwinCollection desiredProperties, object userContext)
@@ -75,11 +74,7 @@ namespace pnp_dnd_device
             {
                 await deviceClient.UpdateReportedPropertiesAsync(
                     PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 500, desiredProperties.Version, "Err. Negative values not supported."));
-                
             }
         }
-
-       
-
     }
 }

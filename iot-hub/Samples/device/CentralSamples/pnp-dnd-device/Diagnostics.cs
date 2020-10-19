@@ -46,14 +46,17 @@ namespace pnp_dnd_device
 
             GC.Collect(2, GCCollectionMode.Forced);
 
-            await Task.Delay(req.delay);
             var resp = new rebootResponse() 
             {
                 rebootAccepted = true,
                 rebootRequestReceived = DateTime.Now,
                 rebootScheduled = DateTime.Now.AddSeconds(req.delay)
             };
+
             await device.OnReboot(resp);
+            
+            await Task.Delay(req.delay);
+
             byte[] responsePayload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(resp));
             return await Task.FromResult(new MethodResponse(responsePayload, (int)PnPConvention.StatusCode.Completed));
         }
