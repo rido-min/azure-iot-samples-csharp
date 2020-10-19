@@ -1,0 +1,43 @@
+{
+  "@id": "dtmi:test:DnD:Thermostat;2",
+  "@type": "Interface",
+  "contents": [
+    {
+      "@type": "Property",
+      "displayName": {
+        "en": "serialNumber"
+      },
+      "name": "serialNumber",
+      "schema": "string",
+      "writable": false
+    },
+    {
+      "@type": "Property",
+      "displayName": {
+        "en": "telemetryInterval"
+      },
+      "name": "telemetryInterval",
+      "schema": "integer",
+      "writable": true
+    },
+    {
+      "@type": [
+        "Telemetry",
+        "Temperature"
+      ],
+      "displayName": {
+        "en": "temperature"
+      },
+      "name": "temperature",
+      "schema": "double",
+      "unit": "degreeCelsius"
+    }
+  ],
+  "displayName": {
+    "en": "dnd-device-template"
+  },
+  "@context": [
+    "dtmi:iotcentral:context;2",
+    "dtmi:dtdl:context;2"
+  ]
+}
