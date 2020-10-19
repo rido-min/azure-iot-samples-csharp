@@ -23,26 +23,19 @@ namespace pnp_dnd_device
         public DateTime rebootScheduled;
     }
 
-    public class RebootCommandEventArgs : EventArgs
-    {
-        public rebootResponse rebootResponse;
-        public RebootCommandEventArgs(rebootResponse response)
-        {
-            rebootResponse = response;
-        }
-    }
-
-
     class DiagnosticsComponent
     {
         public readonly string Name = "diag";
         public readonly string RebootName = "diag*reboot";
-
-        
+        DndPnPDevice device;
+        public DiagnosticsComponent(DndPnPDevice d)
+        {
+            device = d;
+        }
 
         public Message GetWorkingSet()
         {
-            return PnPConvention.CreateMessage("GetWorkingSet", Environment.WorkingSet, Name);
+            return PnPConvention.CreateMessage("workingSet", Environment.WorkingSet, Name);
         }
 
         public async Task<MethodResponse> Reboot(MethodRequest request, object userContext)
@@ -60,13 +53,10 @@ namespace pnp_dnd_device
                 rebootRequestReceived = DateTime.Now,
                 rebootScheduled = DateTime.Now.AddSeconds(req.delay)
             };
-
+            await device.OnReboot(resp);
             byte[] responsePayload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(resp));
-            
             return await Task.FromResult(new MethodResponse(responsePayload, (int)PnPConvention.StatusCode.Completed));
         }
-
-     
     }
 }
 

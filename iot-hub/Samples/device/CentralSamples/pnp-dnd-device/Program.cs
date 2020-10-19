@@ -25,7 +25,7 @@ namespace pnp_dnd_device
             ).CreateLogger<Program>();
 
             logger.LogInformation("Starting .... ");
-            await new Thermostat(config, logger).Run(cancellationTokenSource.Token);
+            await new DndPnPDevice(config, logger).Run(cancellationTokenSource.Token);
         }
     }
 }

@@ -15,14 +15,15 @@ using System.Xml;
 
 namespace pnp_dnd_device
 {
-    class Thermostat
+    class DndPnPDevice
     {
         IConfiguration config;
         ILogger logger;
         DeviceClient deviceClient;
         int telemetryInterval = 5; //by default
+        DiagnosticsComponent diag;
 
-        public Thermostat(IConfiguration c, ILogger log)
+        public DndPnPDevice(IConfiguration c, ILogger log)
         {
             config = c;
             logger = log;
@@ -31,7 +32,7 @@ namespace pnp_dnd_device
         public async Task Run(CancellationToken token)
         {
             deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(config.GetValue<string>("DeviceConnectionString"), logger, "");
-            var diag = new DiagnosticsComponent();
+            diag = new DiagnosticsComponent(this);
 
 
             await deviceClient.SetDesiredPropertyUpdateCallbackAsync(DesiredPropertyUpdateCallback, null);
@@ -52,10 +53,11 @@ namespace pnp_dnd_device
                 
         }
 
-        public async Task DiagnosticsComponent_OnRebootCommandAsync(object sender, RebootCommandEventArgs e)
+        public async Task OnReboot(rebootResponse resp)
         {
+            Console.WriteLine("REBOOT" + new string('*', 30));
             telemetryInterval = 5;
-            await deviceClient.UpdateReportedPropertiesAsync(PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 201, 0, "Using Default Value"));
+            await deviceClient.UpdateReportedPropertiesAsync(PnPConvention.CreateAck(diag.Name, "telemetryInterval", telemetryInterval, 201, 0, "Using Default Value"));
         }
 
         private async Task DesiredPropertyUpdateCallback(TwinCollection desiredProperties, object userContext)
@@ -67,7 +69,7 @@ namespace pnp_dnd_device
                 telemetryInterval = desiredPropertyValue;
 
                 await deviceClient.UpdateReportedPropertiesAsync(
-                    PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
+                    PnPConvention.CreateAck( "telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
             }
             else
             {

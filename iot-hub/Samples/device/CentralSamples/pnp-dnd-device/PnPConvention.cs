@@ -74,6 +74,22 @@ namespace pnp_dnd_device
             return message;
         }
 
+        public static TwinCollection CreateAck(string componentName, string propertyName, object value, int statusCode, long statusVersion, string statusDescription = "")
+        {
+            TwinCollection ack = new TwinCollection();
+            var ackProps = new TwinCollection();
+            ackProps["value"] = value;
+            ackProps["ac"] = statusCode;
+            ackProps["av"] = statusVersion;
+            if (!string.IsNullOrEmpty(statusDescription)) ackProps["ad"] = statusDescription;
+            TwinCollection ackChildren = new TwinCollection();
+            ackChildren["__t"] = "c"; // TODO: Review, should the ACK require the flag
+            ackChildren[propertyName] = ackProps;
+            ack[componentName] = ackChildren;
+            return ack;
+        }
+    
+
         public static TwinCollection CreateAck(string propertyName, object value, int statusCode, long statusVersion, string statusDescription = "")
         {
             TwinCollection ackProp = new TwinCollection();
