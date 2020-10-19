@@ -6,8 +6,10 @@ using Newtonsoft.Json;
 using Rido;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -26,11 +28,14 @@ namespace pnp_dnd_device
             logger = log;
         }
 
-        public async Task Run()
+        public async Task Run(CancellationToken token)
         {
             deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(config.GetValue<string>("DeviceConnectionString"), logger, "");
+            var diag = new DiagnosticsComponent();
+
 
             await deviceClient.SetDesiredPropertyUpdateCallbackAsync(DesiredPropertyUpdateCallback, null);
+            await deviceClient.SetMethodHandlerAsync(diag.RebootName, diag.Reboot, diag.Name, token);
 
             var reported = new TwinCollection();
             reported["serialNumber"] = "S/N-123";
@@ -40,10 +45,17 @@ namespace pnp_dnd_device
             while (true)
             {
                 await deviceClient.SendEventAsync(PnPConvention.CreateMessage(new { temperature = new Random().Next(100) }));
+                await deviceClient.SendEventAsync(diag.GetWorkingSet());
                 Console.WriteLine($"Waiting {telemetryInterval} seconds.");
                 await Task.Delay(telemetryInterval * 1000);
             }                
                 
+        }
+
+        public async Task DiagnosticsComponent_OnRebootCommandAsync(object sender, RebootCommandEventArgs e)
+        {
+            telemetryInterval = 5;
+            await deviceClient.UpdateReportedPropertiesAsync(PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 201, 0, "Using Default Value"));
         }
 
         private async Task DesiredPropertyUpdateCallback(TwinCollection desiredProperties, object userContext)
