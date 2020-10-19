@@ -35,18 +35,11 @@ namespace pnp_dnd_device
             var reported = new TwinCollection();
             reported["serialNumber"] = "S/N-123";
             await deviceClient.UpdateReportedPropertiesAsync(reported);
-            await deviceClient.UpdateReportedPropertiesAsync(CreateAck("telemetryInterval", telemetryInterval, 201, 0, "Using Default Value"));
+            await deviceClient.UpdateReportedPropertiesAsync(PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 201, 0, "Using Default Value"));
 
             while (true)
             {
-                var telemetryPayload = JsonConvert.SerializeObject(new { temperature = new Random().Next(100) });
-                using var message = new Message(Encoding.UTF8.GetBytes(telemetryPayload))
-                {
-                    ContentEncoding = "utf-8",
-                    ContentType = "application/json",
-                };
-                await deviceClient.SendEventAsync(message);
-
+                await deviceClient.SendEventAsync(PnPConvention.CreateMessage(new { temperature = new Random().Next(100) }));
                 Console.WriteLine($"Waiting {telemetryInterval} seconds.");
                 await Task.Delay(telemetryInterval * 1000);
             }                
@@ -60,32 +53,19 @@ namespace pnp_dnd_device
             if (desiredPropertyValue > 0)
             {
                 telemetryInterval = desiredPropertyValue;
-                await AckDesiredPropertyReadAsync("telemetryInterval", desiredPropertyValue, 200, "property synced", desiredProperties.Version);
+
+                await deviceClient.UpdateReportedPropertiesAsync(
+                    PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
             }
             else
             {
-                await AckDesiredPropertyReadAsync("telemetryInterval", desiredPropertyValue, 500, "Err. Negative values not supported.", desiredProperties.Version);
+                await deviceClient.UpdateReportedPropertiesAsync(
+                    PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 500, desiredProperties.Version, "Err. Negative values not supported."));
+                
             }
         }
 
-        public async Task AckDesiredPropertyReadAsync(string propertyName, object payload, int statuscode, string description, long version)
-        {
-            var ack = CreateAck(propertyName, payload, statuscode, version, description);
-            await deviceClient.UpdateReportedPropertiesAsync(ack);
-        }
-
-        private TwinCollection CreateAck(string propertyName, object value, int statusCode, long statusVersion, string statusDescription = "")
-        {
-            TwinCollection ackProp = new TwinCollection();
-            ackProp[propertyName] = new
-            {
-                value = value,
-                ac = statusCode,
-                av = statusVersion,
-                ad = statusDescription
-            };
-            return ackProp;
-        }
+       
 
     }
 }
