@@ -1,0 +1,179 @@
+{
+  "@id": "dtmi:test:DnD:Thermostat;5",
+  "@type": "Interface",
+  "contents": [
+    {
+      "@type": "Component",
+      "name": "devInfo",
+      "schema": {
+        "@type": "Interface",
+        "@id": "dtmi:azure:DeviceManagement:DeviceInformation;1",
+        "contents": [
+          {
+            "@type": "Property",
+            "name": "totalMemory",
+            "schema": "double"
+          }
+        ]
+      }
+    },
+    {
+      "@type": "Property",
+      "displayName": {
+        "en": "serialNumber"
+      },
+      "name": "serialNumber",
+      "schema": "string",
+      "writable": false
+    },
+    {
+      "@type": "Property",
+      "displayName": {
+        "en": "telemetryInterval"
+      },
+      "name": "telemetryInterval",
+      "schema": "integer",
+      "writable": true
+    },
+    {
+      "@type": [
+        "Telemetry",
+        "Temperature"
+      ],
+      "displayName": {
+        "en": "temperature"
+      },
+      "name": "temperature",
+      "schema": "double",
+      "unit": "degreeCelsius"
+    },
+    {
+      "@type": "Component",
+      "displayName": {
+        "en": "Diagnostics"
+      },
+      "name": "diag",
+      "schema": {
+        "@id": "dtmi:com:example:Diagnostics;2",
+        "@type": "Interface",
+        "contents": [
+          {
+            "@type": "Telemetry",
+            "displayName": {
+              "en": "workingSet"
+            },
+            "name": "workingSet",
+            "schema": "double"
+          },
+          {
+            "@type": "Command",
+            "commandType": "synchronous",
+            "displayName": {
+              "en": "reboot"
+            },
+            "name": "reboot",
+            "request": {
+              "@type": "CommandPayload",
+              "displayName": {
+                "en": "rebootRequest"
+              },
+              "name": "rebootRequest",
+              "schema": {
+                "@id": "dtmi:com:example:Diagnostics:reboot:rebootRequest:schema;1",
+                "@type": "Object",
+                "displayName": {
+                  "en": "Object"
+                },
+                "fields": [
+                  {
+                    "displayName": {
+                      "en": "delay"
+                    },
+                    "name": "delay",
+                    "schema": "integer"
+                  },
+                  {
+                    "displayName": {
+                      "en": "requestedBy"
+                    },
+                    "name": "requestedBy",
+                    "schema": "string"
+                  },
+                  {
+                    "displayName": {
+                      "en": "requestReason"
+                    },
+                    "name": "requestReason",
+                    "schema": "string"
+                  },
+                  {
+                    "displayName": {
+                      "en": "requestDate"
+                    },
+                    "name": "requestDate",
+                    "schema": "dateTime"
+                  }
+                ]
+              }
+            },
+            "response": {
+              "@type": "CommandPayload",
+              "displayName": {
+                "en": "rebootResponse"
+              },
+              "name": "rebootResponse",
+              "schema": {
+                "@id": "dtmi:com:example:Diagnostics:reboot:rebootResponse:schema;1",
+                "@type": "Object",
+                "displayName": {
+                  "en": "Object"
+                },
+                "fields": [
+                  {
+                    "displayName": {
+                      "en": "rebootAccepted"
+                    },
+                    "name": "rebootAccepted",
+                    "schema": "boolean"
+                  },
+                  {
+                    "displayName": {
+                      "en": "rebootRequestReceived"
+                    },
+                    "name": "rebootRequestReceived",
+                    "schema": "dateTime"
+                  },
+                  {
+                    "displayName": {
+                      "en": "rebootScheduled"
+                    },
+                    "name": "rebootScheduled",
+                    "schema": "dateTime"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "@type": "Property",
+            "displayName": {
+              "en": "lastReboot"
+            },
+            "name": "lastReboot",
+            "schema": "dateTime"
+          }
+        ],
+        "displayName": {
+          "en": "Diagnostics"
+        }
+      }
+    }
+  ],
+  "displayName": {
+    "en": "Default"
+  },
+  "@context": [
+    "dtmi:iotcentral:context;2",
+    "dtmi:dtdl:context;2"
+  ]
+}

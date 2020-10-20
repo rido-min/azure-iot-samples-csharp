@@ -38,9 +38,10 @@ namespace pnp_dnd_device
 
             while (true)
             {
-                await deviceClient.SendEventAsync(PnPConvention.CreateMessage(new { temperature = new Random().Next(100) }));
+                var temp = new Random().Next(100);
+                await deviceClient.SendEventAsync(PnPConvention.CreateMessage(new { temperature = temp }));
                 await deviceClient.SendEventAsync(diag.GetWorkingSet());
-                Console.Write($"\r [{DateTime.Now.ToLongTimeString()}] \t Interval {telemetryInterval} s ");
+                Console.Write($"\r [{DateTime.Now.ToLongTimeString()}] \t Sending temperature '{temp}' and workingSet {Environment.WorkingSet} with {telemetryInterval} interval ");
                 await Task.Delay(telemetryInterval * 1000);
             }
 
