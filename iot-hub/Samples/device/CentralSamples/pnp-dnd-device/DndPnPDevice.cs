@@ -42,8 +42,8 @@ namespace pnp_dnd_device
                 await deviceClient.SendEventAsync(diag.GetWorkingSet());
                 Console.Write($"\r [{DateTime.Now.ToLongTimeString()}] \t Interval {telemetryInterval} s ");
                 await Task.Delay(telemetryInterval * 1000);
-            }                
-                
+            }
+
         }
 
         public async Task OnReboot(rebootResponse resp)
@@ -68,7 +68,7 @@ namespace pnp_dnd_device
                 telemetryInterval = desiredPropertyValue;
 
                 await deviceClient.UpdateReportedPropertiesAsync(
-                    PnPConvention.CreateAck( "telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
+                    PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
             }
             else
             {

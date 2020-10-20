@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace pnp_dnd_device
 {
@@ -83,12 +82,12 @@ namespace pnp_dnd_device
             ackProps["av"] = statusVersion;
             if (!string.IsNullOrEmpty(statusDescription)) ackProps["ad"] = statusDescription;
             TwinCollection ackChildren = new TwinCollection();
-            ackChildren["__t"] = "c"; 
+            ackChildren["__t"] = "c";
             ackChildren[propertyName] = ackProps;
             ack[componentName] = ackChildren;
             return ack;
         }
-    
+
 
         public static TwinCollection CreateAck(string propertyName, object value, int statusCode, long statusVersion, string statusDescription = "")
         {

@@ -1,8 +1,6 @@
 ﻿using Microsoft.Azure.Devices.Client;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +11,7 @@ namespace pnp_dnd_device
         public int delay = 1;
         public string requestedBy = string.Empty;
         public string requestReason = string.Empty;
-        public DateTime requestDate =DateTime.MinValue;
+        public DateTime requestDate = DateTime.MinValue;
     }
 
     public class rebootResponse
@@ -46,7 +44,7 @@ namespace pnp_dnd_device
 
             GC.Collect(2, GCCollectionMode.Forced);
 
-            var resp = new rebootResponse() 
+            var resp = new rebootResponse()
             {
                 rebootAccepted = true,
                 rebootRequestReceived = DateTime.Now,
@@ -54,7 +52,7 @@ namespace pnp_dnd_device
             };
 
             await device.OnReboot(resp);
-            
+
             await Task.Delay(req.delay);
 
             byte[] responsePayload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(resp));
