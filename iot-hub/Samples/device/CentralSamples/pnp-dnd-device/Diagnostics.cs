@@ -33,7 +33,7 @@ namespace pnp_dnd_device
 
         public Message GetWorkingSet()
         {
-            return PnPConvention.CreateMessage("workingSet", Environment.WorkingSet, Name);
+            return PnpHelpers.PnpConvention.CreateMessage("workingSet", Environment.WorkingSet, Name);
         }
 
         public async Task<MethodResponse> Reboot(MethodRequest request, object userContext)
@@ -56,7 +56,7 @@ namespace pnp_dnd_device
             await Task.Delay(req.delay);
 
             byte[] responsePayload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(resp));
-            return await Task.FromResult(new MethodResponse(responsePayload, (int)PnPConvention.StatusCode.Completed));
+            return await Task.FromResult(new MethodResponse(responsePayload, 200));
         }
     }
 }

@@ -34,12 +34,12 @@ namespace pnp_dnd_device
             var reported = new TwinCollection();
             reported["serialNumber"] = "S/N-123";
             await deviceClient.UpdateReportedPropertiesAsync(reported);
-            await deviceClient.UpdateReportedPropertiesAsync(PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 201, 0, "Using Default Value"));
+            await deviceClient.UpdateReportedPropertiesAsync(PnpHelpers.PnpConvention.CreateWritablePropertyResponse("telemetryInterval", telemetryInterval, 201, 0, "Using default value"));
 
             while (true)
             {
                 var temp = new Random().Next(100);
-                await deviceClient.SendEventAsync(PnPConvention.CreateMessage(new { temperature = temp }));
+                await deviceClient.SendEventAsync(PnpHelpers.PnpConvention.CreateMessage("temperature",  temp));
                 await deviceClient.SendEventAsync(diag.GetWorkingSet());
                 Console.Write($"\r [{DateTime.Now.ToLongTimeString()}] \t Sending temperature '{temp}' and workingSet {Environment.WorkingSet} with {telemetryInterval} interval ");
                 await Task.Delay(telemetryInterval * 1000);
@@ -69,12 +69,12 @@ namespace pnp_dnd_device
                 telemetryInterval = desiredPropertyValue;
 
                 await deviceClient.UpdateReportedPropertiesAsync(
-                    PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
+                    PnpHelpers.PnpConvention.CreateWritablePropertyResponse("telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
             }
             else
             {
                 await deviceClient.UpdateReportedPropertiesAsync(
-                    PnPConvention.CreateAck("telemetryInterval", telemetryInterval, 500, desiredProperties.Version, "Err. Negative values not supported."));
+                    PnpHelpers.PnpConvention.CreateWritablePropertyResponse("telemetryInterval", telemetryInterval, 500, desiredProperties.Version, "Err. Negative values not supported."));
             }
         }
     }
