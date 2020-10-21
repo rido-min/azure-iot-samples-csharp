@@ -40,7 +40,7 @@ namespace pnp_dnd_device
                 var temp = new Random().Next(100);
                 await deviceClient.SendEventAsync(pnp.CreateMessage("temperature", temp));
                 await deviceClient.SendEventAsync(pnp.CreateMessage("workingSet", Environment.WorkingSet, diag.Name));
-                Console.Write($"\r [{DateTime.Now.ToLongTimeString()}] \t Sending temperature '{temp}' and workingSet {Environment.WorkingSet} with {telemetryInterval} interval ");
+                Console.Write($"\r [{DateTime.Now.ToLongTimeString()}] \t Sending temperature '{temp}' and workingSet {Environment.WorkingSet} with {telemetryInterval} s. interval ");
                 await Task.Delay(telemetryInterval * 1000);
             }
         }
@@ -56,18 +56,27 @@ namespace pnp_dnd_device
         private async Task DesiredPropertyUpdateCallback(TwinCollection desiredProperties, object userContext)
         {
             this.logger.LogWarning($"Received desired updates [{desiredProperties.ToJson()}]");
-            var desiredPropertyValue = desiredProperties["telemetryInterval"];
-            if (desiredPropertyValue > 0)
-            {
-                telemetryInterval = desiredPropertyValue;
 
-                await deviceClient.UpdateReportedPropertiesAsync(
-                    pnp.CreateWritablePropertyResponse("telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
+            if (pnp.TryGetPropertyFromTwin<int>(desiredProperties, "telemetryInterval", out int desiredPropertyValue))
+            {
+                if (desiredPropertyValue > 0)
+                {
+                    telemetryInterval = desiredPropertyValue;
+
+                    await deviceClient.UpdateReportedPropertiesAsync(
+                        pnp.CreateWritablePropertyResponse("telemetryInterval", telemetryInterval, 200, desiredProperties.Version, "Property synced"));
+                }
+                else
+                {
+                    await deviceClient.UpdateReportedPropertiesAsync(
+                        pnp.CreateWritablePropertyResponse("telemetryInterval", telemetryInterval, 500, desiredProperties.Version, "Err. Negative values not supported."));
+                }
             }
             else
             {
                 await deviceClient.UpdateReportedPropertiesAsync(
-                    pnp.CreateWritablePropertyResponse("telemetryInterval", telemetryInterval, 500, desiredProperties.Version, "Err. Negative values not supported."));
+                        pnp.CreateWritablePropertyResponse("telemetryInterval", telemetryInterval, 500, desiredProperties.Version, "telemetryInterval not found in desired properties"));
+
             }
         }
     }

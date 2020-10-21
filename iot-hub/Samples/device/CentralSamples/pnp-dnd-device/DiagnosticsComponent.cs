@@ -39,7 +39,7 @@ namespace pnp_dnd_device
             var req = JsonConvert.DeserializeObject<rebootRequest>(request.DataAsJson);
             Console.WriteLine(req.requestedBy);
 
-            GC.Collect(2, GCCollectionMode.Forced);
+            await Task.Run(() => GC.Collect(2, GCCollectionMode.Forced));
 
             var resp = new rebootResponse()
             {
