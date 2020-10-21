@@ -9,7 +9,7 @@ namespace pnp_dnd_device
     {
         static async Task Main(string[] args)
         {
-            var cancellationTokenSource = new CancellationTokenSource(360000);
+            var cancellationTokenSource = new CancellationTokenSource();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()

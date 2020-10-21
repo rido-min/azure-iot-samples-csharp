@@ -31,10 +31,7 @@ namespace pnp_dnd_device
             device = d;
         }
 
-        public Message GetWorkingSet()
-        {
-            return PnpHelpers.PnpConvention.CreateMessage("workingSet", Environment.WorkingSet, Name);
-        }
+        
 
         public async Task<MethodResponse> Reboot(MethodRequest request, object userContext)
         {
