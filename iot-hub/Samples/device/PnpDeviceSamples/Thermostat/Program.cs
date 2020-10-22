@@ -15,7 +15,7 @@ namespace Microsoft.Azure.Devices.Client.Samples
     public class Program
     {
         // DTDL interface used: https://github.com/Azure/opendigitaltwins-dtdl/blob/master/DTDL/v2/samples/Thermostat.json
-        private const string ModelId = "dtmi:com:example:Thermostat;1";
+        private const string ModelId = "dtmi:com:example:Thermostat;2";
 
         private static ILogger s_logger;
 

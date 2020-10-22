@@ -39,7 +39,7 @@
       },
       "name": "diag",
       "schema": {
-        "@id": "dtmi:com:example:Diagnostics;2",
+        "@id": "dtmi:test:DnD:Thermostat:Diagnostics;2",
         "@type": "Interface",
         "contents": [
           {
@@ -64,7 +64,6 @@
               },
               "name": "rebootRequest",
               "schema": {
-                "@id": "dtmi:com:example:Diagnostics:reboot:rebootRequest:schema;1",
                 "@type": "Object",
                 "displayName": {
                   "en": "Object"
@@ -108,7 +107,6 @@
               },
               "name": "rebootResponse",
               "schema": {
-                "@id": "dtmi:com:example:Diagnostics:reboot:rebootResponse:schema;1",
                 "@type": "Object",
                 "displayName": {
                   "en": "Object"
