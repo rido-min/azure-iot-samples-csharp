@@ -1,0 +1,349 @@
+{
+  "@id": "dtmi:com:example:TemperatureController2;3",
+  "@type": "Interface",
+  "contents": [
+    {
+      "@type": [
+        "Telemetry",
+        "DataSize"
+      ],
+      "description": {
+        "en": "Current working set of the device memory in KiB."
+      },
+      "displayName": {
+        "en": "Working Set"
+      },
+      "name": "workingSet",
+      "schema": "double",
+      "unit": "kibibit"
+    },
+    {
+      "@type": "Property",
+      "displayName": {
+        "en": "Serial Number"
+      },
+      "name": "serialNumber",
+      "schema": "string",
+      "writable": false
+    },
+    {
+      "@type": "Command",
+      "commandType": "synchronous",
+      "description": {
+        "en": "Reboots the device after waiting the number of seconds specified."
+      },
+      "displayName": {
+        "en": "Reboot"
+      },
+      "name": "reboot",
+      "request": {
+        "@type": "CommandPayload",
+        "description": {
+          "en": "Number of seconds to wait before rebooting the device."
+        },
+        "displayName": {
+          "en": "Delay"
+        },
+        "name": "delay",
+        "schema": "integer"
+      }
+    },
+    {
+      "@type": "Component",
+      "displayName": {
+        "en": "thermostat1"
+      },
+      "name": "thermostat1",
+      "schema": {
+        "@id": "dtmi:com:example:Thermostat1;2",
+        "@type": "Interface",
+        "contents": [
+          {
+            "@type": [
+              "Telemetry",
+              "Temperature"
+            ],
+            "description": {
+              "en": "Temperature in degrees Celsius."
+            },
+            "displayName": {
+              "en": "Temperature"
+            },
+            "name": "temperature",
+            "schema": "double",
+            "unit": "degreeCelsius"
+          },
+          {
+            "@type": [
+              "Property",
+              "Temperature"
+            ],
+            "description": {
+              "en": "Allows to remotely specify the desired target temperature."
+            },
+            "displayName": {
+              "en": "Target Temperature"
+            },
+            "name": "targetTemperature",
+            "schema": "double",
+            "unit": "degreeCelsius",
+            "writable": true
+          },
+          {
+            "@type": [
+              "Property",
+              "Temperature"
+            ],
+            "description": {
+              "en": "Returns the max temperature since last device reboot."
+            },
+            "displayName": {
+              "en": "Max temperature since last reboot."
+            },
+            "name": "maxTempSinceLastReboot",
+            "schema": "double",
+            "unit": "degreeCelsius",
+            "writable": false
+          },
+          {
+            "@type": "Command",
+            "commandType": "synchronous",
+            "description": {
+              "en": "This command returns the max, min and average temperature from the specified time to the current time."
+            },
+            "displayName": {
+              "en": "Get Max-Min report."
+            },
+            "name": "GetMaxMinReport",
+            "request": {
+              "@type": "CommandPayload",
+              "description": {
+                "en": "Period to return the max-min report."
+              },
+              "displayName": {
+                "en": "Since"
+              },
+              "name": "Since",
+              "schema": "dateTime"
+            },
+            "response": {
+              "@type": "CommandPayload",
+              "displayName": {
+                "en": "Temperature Report"
+              },
+              "name": "TemperatureReport",
+              "schema": "dtmi:com:example:Thermostat1:GetMaxMinReport:TemperatureReport:schema;1"
+            }
+          }
+        ],
+        "displayName": {
+          "en": "thermostat1"
+        }
+      }
+    },
+    {
+      "@type": "Component",
+      "displayName": {
+        "en": "thermostat2"
+      },
+      "name": "thermostat2",
+      "schema": {
+        "@id": "dtmi:com:example:thermostat2;1",
+        "@type": "Interface",
+        "contents": [
+          {
+            "@type": [
+              "Telemetry",
+              "Temperature"
+            ],
+            "description": {
+              "en": "Temperature in degrees Celsius."
+            },
+            "displayName": {
+              "en": "Temperature"
+            },
+            "name": "temperature",
+            "schema": "double",
+            "unit": "degreeCelsius"
+          },
+          {
+            "@type": [
+              "Property",
+              "Temperature"
+            ],
+            "description": {
+              "en": "Allows to remotely specify the desired target temperature."
+            },
+            "displayName": {
+              "en": "Target Temperature"
+            },
+            "name": "targetTemperature",
+            "schema": "double",
+            "unit": "degreeCelsius",
+            "writable": true
+          },
+          {
+            "@type": [
+              "Property",
+              "Temperature"
+            ],
+            "description": {
+              "en": "Returns the max temperature since last device reboot."
+            },
+            "displayName": {
+              "en": "Max temperature since last reboot."
+            },
+            "name": "maxTempSinceLastReboot",
+            "schema": "double",
+            "unit": "degreeCelsius",
+            "writable": false
+          },
+          {
+            "@type": "Command",
+            "commandType": "synchronous",
+            "description": {
+              "en": "This command returns the max, min and average temperature from the specified time to the current time."
+            },
+            "displayName": {
+              "en": "Get Max-Min report."
+            },
+            "name": "GetMaxMinReport",
+            "request": {
+              "@type": "CommandPayload",
+              "description": {
+                "en": "Period to return the max-min report."
+              },
+              "displayName": {
+                "en": "since"
+              },
+              "name": "since",
+              "schema": "dateTime"
+            },
+            "response": {
+              "@type": "CommandPayload",
+              "displayName": {
+                "en": "Temperature Report"
+              },
+              "name": "TemperatureReport",
+              "schema": "dtmi:com:example:Thermostat1:GetMaxMinReport:TemperatureReport:schema;1"
+            }
+          }
+        ],
+        "displayName": {
+          "en": "thermostat2"
+        }
+      }
+    },
+    {
+      "@type": "Component",
+      "displayName": {
+        "en": "DeviceInfo"
+      },
+      "name": "deviceInformation",
+      "schema": {
+        "@id": "dtmi:azure:DeviceManagement:DeviceInformation;1",
+        "@type": "Interface",
+        "contents": [
+          {
+            "@type": "Property",
+            "description": {
+              "en": "Company name of the device manufacturer. This could be the same as the name of the original equipment manufacturer (OEM). Ex. Contoso."
+            },
+            "displayName": {
+              "en": "Manufacturer"
+            },
+            "name": "manufacturer",
+            "schema": "string"
+          },
+          {
+            "@type": "Property",
+            "description": {
+              "en": "Device model name or ID. Ex. Surface Book 2."
+            },
+            "displayName": {
+              "en": "Device model"
+            },
+            "name": "model",
+            "schema": "string"
+          },
+          {
+            "@type": "Property",
+            "description": {
+              "en": "Version of the software on your device. This could be the version of your firmware. Ex. 1.3.45"
+            },
+            "displayName": {
+              "en": "Software version"
+            },
+            "name": "swVersion",
+            "schema": "string"
+          },
+          {
+            "@type": "Property",
+            "description": {
+              "en": "Name of the operating system on the device. Ex. Windows 10 IoT Core."
+            },
+            "displayName": {
+              "en": "Operating system name"
+            },
+            "name": "osName",
+            "schema": "string"
+          },
+          {
+            "@type": "Property",
+            "description": {
+              "en": "Architecture of the processor on the device. Ex. x64 or ARM."
+            },
+            "displayName": {
+              "en": "Processor architecture"
+            },
+            "name": "processorArchitecture",
+            "schema": "string"
+          },
+          {
+            "@type": "Property",
+            "description": {
+              "en": "Name of the manufacturer of the processor on the device. Ex. Intel."
+            },
+            "displayName": {
+              "en": "Processor manufacturer"
+            },
+            "name": "processorManufacturer",
+            "schema": "string"
+          },
+          {
+            "@type": "Property",
+            "description": {
+              "en": "Total available storage on the device in kilobytes. Ex. 2048000 kilobytes."
+            },
+            "displayName": {
+              "en": "Total storage"
+            },
+            "name": "totalStorage",
+            "schema": "double"
+          },
+          {
+            "@type": "Property",
+            "description": {
+              "en": "Total available memory on the device in kilobytes. Ex. 256000 kilobytes."
+            },
+            "displayName": {
+              "en": "Total memory"
+            },
+            "name": "totalMemory",
+            "schema": "double"
+          }
+        ],
+        "displayName": {
+          "en": "Component"
+        }
+      }
+    }
+  ],
+  "displayName": {
+    "en": "Temperature Controller"
+  },
+  "@context": [
+    "dtmi:iotcentral:context;2",
+    "dtmi:dtdl:context;2"
+  ]
+}
