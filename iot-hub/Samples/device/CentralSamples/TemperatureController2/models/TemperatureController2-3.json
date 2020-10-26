@@ -1,5 +1,5 @@
 {
-  "@id": "dtmi:com:example:TemperatureController2;3",
+  "@id": "dtmi:com:example:dnd:TemperatureController;1",
   "@type": "Interface",
   "contents": [
     {
@@ -55,7 +55,7 @@
       },
       "name": "thermostat1",
       "schema": {
-        "@id": "dtmi:com:example:Thermostat1;2",
+        "@id": "dtmi:com:example:dnd:Thermostat;1",
         "@type": "Interface",
         "contents": [
           {
@@ -114,7 +114,7 @@
             "displayName": {
               "en": "Get Max-Min report."
             },
-            "name": "GetMaxMinReport",
+            "name": "getMaxMinReport",
             "request": {
               "@type": "CommandPayload",
               "description": {
@@ -123,7 +123,7 @@
               "displayName": {
                 "en": "Since"
               },
-              "name": "Since",
+              "name": "since",
               "schema": "dateTime"
             },
             "response": {
@@ -132,7 +132,36 @@
                 "en": "Temperature Report"
               },
               "name": "TemperatureReport",
-              "schema": "dtmi:com:example:Thermostat1:GetMaxMinReport:TemperatureReport:schema;1"
+              "schema": {
+                "@type": "Object",
+                "fields": [
+                  {
+                    "name": "maxTemp",
+                    "displayName": "Max temperature",
+                    "schema": "double"
+                  },
+                  {
+                    "name": "minTemp",
+                    "displayName": "Min temperature",
+                    "schema": "double"
+                  },
+                  {
+                    "name": "avgTemp",
+                    "displayName": "Average Temperature",
+                    "schema": "double"
+                  },
+                  {
+                    "name": "startTime",
+                    "displayName": "Start Time",
+                    "schema": "dateTime"
+                  },
+                  {
+                    "name": "endTime",
+                    "displayName": "End Time",
+                    "schema": "dateTime"
+                  }
+                ]
+              }
             }
           }
         ],
@@ -148,7 +177,7 @@
       },
       "name": "thermostat2",
       "schema": {
-        "@id": "dtmi:com:example:thermostat2;1",
+        "@id": "dtmi:com:example:dnd:Thermostat;2",
         "@type": "Interface",
         "contents": [
           {
@@ -207,14 +236,14 @@
             "displayName": {
               "en": "Get Max-Min report."
             },
-            "name": "GetMaxMinReport",
+            "name": "getMaxMinReport",
             "request": {
               "@type": "CommandPayload",
               "description": {
                 "en": "Period to return the max-min report."
               },
               "displayName": {
-                "en": "since"
+                "en": "Since"
               },
               "name": "since",
               "schema": "dateTime"
@@ -225,7 +254,36 @@
                 "en": "Temperature Report"
               },
               "name": "TemperatureReport",
-              "schema": "dtmi:com:example:Thermostat1:GetMaxMinReport:TemperatureReport:schema;1"
+              "schema": {
+                "@type": "Object",
+                "fields": [
+                  {
+                    "name": "maxTemp",
+                    "displayName": "Max temperature",
+                    "schema": "double"
+                  },
+                  {
+                    "name": "minTemp",
+                    "displayName": "Min temperature",
+                    "schema": "double"
+                  },
+                  {
+                    "name": "avgTemp",
+                    "displayName": "Average Temperature",
+                    "schema": "double"
+                  },
+                  {
+                    "name": "startTime",
+                    "displayName": "Start Time",
+                    "schema": "dateTime"
+                  },
+                  {
+                    "name": "endTime",
+                    "displayName": "End Time",
+                    "schema": "dateTime"
+                  }
+                ]
+              }
             }
           }
         ],
@@ -241,7 +299,7 @@
       },
       "name": "deviceInformation",
       "schema": {
-        "@id": "dtmi:azure:DeviceManagement:DeviceInformation;1",
+        "@id": "dtmi:azure:DeviceManagement:DeviceInformation;2",
         "@type": "Interface",
         "contents": [
           {
