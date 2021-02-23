@@ -88,9 +88,9 @@ namespace Microsoft.Azure.Devices.Client.Samples
                 await _deviceClient.UpdateReportedPropertiesAsync(reportedPropertyPending);
                 _logger.LogDebug($"Property: Update - {{\"{propertyName}\": {targetTemperature}°C }} is {StatusCode.InProgress}.");
 
-                // Update Temperature in 2 steps
-                double step = (targetTemperature - _temperature) / 2d;
-                for (int i = 1; i <= 2; i++)
+                // Update Temperature in 10 steps
+                double step = (targetTemperature - _temperature) / 10d;
+                for (int i = 1; i <= 10; i++)
                 {
                     _temperature = Math.Round(_temperature + step, 1);
                     await Task.Delay(6 * 1000);

@@ -82,7 +82,7 @@ namespace Microsoft.Azure.Devices.Client.Samples
                     s_logger.LogDebug($"Initializing via DPS");
                     DeviceRegistrationResult dpsRegistrationResult = await ProvisionDeviceAsync(parameters, cancellationToken);
                     var authMethod = new DeviceAuthenticationWithRegistrySymmetricKey(dpsRegistrationResult.DeviceId, parameters.DeviceSymmetricKey);
-                    deviceClient = InitializeDeviceClient(dpsRegistrationResult.AssignedHub, authMethod);
+                    deviceClient = InitializeDeviceClient(dpsRegistrationResult.AssignedHub, parameters.IotEdgeGateway, authMethod);
                     break;
 
                 case "connectionstring":
@@ -106,9 +106,15 @@ namespace Microsoft.Azure.Devices.Client.Samples
             ProvisioningDeviceClient pdc = ProvisioningDeviceClient.Create(parameters.DpsEndpoint, parameters.DpsIdScope,
                 symmetricKeyProvider, mqttTransportHandler);
 
+            var jsonData = $"{{ \"modelId\": \"{ModelId}\"";
+            if (!string.IsNullOrWhiteSpace(parameters.IotEdgeGateway))
+            {
+                jsonData += $", \"iotcGateway\": {{ \"iotcGatewayId\": \"{parameters.IotEdgeGateway}\" }}";
+            }
+            jsonData += "}";
             var pnpPayload = new ProvisioningRegistrationAdditionalData
             {
-                JsonData = $"{{ \"modelId\": \"{ModelId}\" }}",
+                JsonData = jsonData
             };
             return await pdc.RegisterAsync(pnpPayload, cancellationToken);
         }
@@ -121,6 +127,7 @@ namespace Microsoft.Azure.Devices.Client.Samples
             var options = new ClientOptions
             {
                 ModelId = ModelId,
+
             };
 
             DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(deviceConnectionString, TransportType.Mqtt, options);
@@ -134,14 +141,22 @@ namespace Microsoft.Azure.Devices.Client.Samples
 
         // Initialize the device client instance using symmetric key based authentication, over Mqtt protocol (TCP, with fallback over Websocket) and setting the ModelId into ClientOptions.
         // This method also sets a connection status change callback, that will get triggered any time the device's connection status changes.
-        private static DeviceClient InitializeDeviceClient(string hostname, IAuthenticationMethod authenticationMethod)
+        private static DeviceClient InitializeDeviceClient(string hostname, string gatewayId, IAuthenticationMethod authenticationMethod)
         {
             var options = new ClientOptions
             {
                 ModelId = ModelId,
             };
+            DeviceClient deviceClient;
+            if (!string.IsNullOrWhiteSpace(gatewayId))
+            {
+                deviceClient = DeviceClient.Create(hostname, gatewayId, authenticationMethod, TransportType.Mqtt, options);
+            }
+            else
+            {
+                deviceClient = DeviceClient.Create(hostname, authenticationMethod, TransportType.Mqtt, options);
+            }
 
-            DeviceClient deviceClient = DeviceClient.Create(hostname, authenticationMethod, TransportType.Mqtt, options);
             deviceClient.SetConnectionStatusChangesHandler((status, reason) =>
             {
                 s_logger.LogDebug($"Connection status change registered - status={status}, reason={reason}.");

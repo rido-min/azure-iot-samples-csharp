@@ -62,6 +62,13 @@ namespace Microsoft.Azure.Devices.Client.Samples
             HelpText = "The running time for this console application. Leave it unassigned to run the application until it is explicitly canceled using Control+C.")]
         public double? ApplicationRunningTime { get; set; }
 
+        [Option(
+           'g',
+           "Edge Gateway Device name",
+           Required = false,
+           HelpText = "The Device ID acting as a Transparent Gateway") ]
+        public string IotEdgeGateway { get; set; } = Environment.GetEnvironmentVariable("IOTEDGE_GATEWAY");
+
         public bool Validate(ILogger logger)
         {
             if (string.IsNullOrWhiteSpace(DeviceSecurityType))
