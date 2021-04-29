@@ -29,11 +29,19 @@ namespace Microsoft.Azure.Devices.Client.Samples
                     Environment.Exit(1);
                 });
 
+            TimeSpan? appRunTime = null;
+            if (parameters.ApplicationRunningTime.HasValue)
+            {
+                Console.WriteLine($"Running sample for a max time of {parameters.ApplicationRunningTime.Value} seconds.");
+                appRunTime = TimeSpan.FromSeconds(parameters.ApplicationRunningTime.Value);
+            }
+
             using var deviceClient = DeviceClient.CreateFromConnectionString(
                 parameters.PrimaryConnectionString,
                 parameters.TransportType);
-            var sample = new MessageReceiveSample(deviceClient);
+            var sample = new MessageReceiveSample(deviceClient, appRunTime);
             await sample.RunSampleAsync();
+            await deviceClient.CloseAsync();
 
             Console.WriteLine("Done.");
             return 0;
